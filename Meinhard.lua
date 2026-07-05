@@ -153,7 +153,7 @@ UIS.InputChanged:Connect(function(input)
 end)
 
 local autoTP, flying = false, false
-local AUTO_POS = CFrame.new(-304.17, 195.73, -1192.17)
+local AUTO_POS = CFrame.new(470.08, 197.57, -824.11)
 local flySpeed, flySmooth, flyBV = 85, 0.18, nil
 
 local function btn(text, y)
