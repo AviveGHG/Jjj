@@ -6,33 +6,40 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 ------------------------------------------------
--- HACKER SKIN SYSTEM
+-- HACKER SKIN SYSTEM & TAGGING
 ------------------------------------------------
 local function processCharacter(char)
     if not char then return end
 
-    local hum = char:FindFirstChildOfClass("Humanoid")
-    if hum then
-        hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+    -- Bestehenden Tag entfernen, falls vorhanden, und neu erstellen
+    local head = char:WaitForChild("Head", 5)
+    if head and not head:FindFirstChild("HackerTag") then
+        local billboard = Instance.new("BillboardGui", head)
+        billboard.Name = "HackerTag"
+        billboard.Size = UDim2.new(0, 100, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 2, 0)
+        billboard.AlwaysOnTop = true
+        
+        local img = Instance.new("ImageLabel", billboard)
+        img.Size = UDim2.new(1, 0, 1, 0)
+        img.BackgroundTransparency = 1
+        img.Image = "rbxassetid://7072535038" -- Standard-Icon, hier eigene ID einfügen
     end
 
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None end
+
     for _, item in pairs(char:GetDescendants()) do
-        if item:IsA("Accessory") or 
-           item:IsA("Shirt") or 
-           item:IsA("Pants") or 
-           item:IsA("CharacterMesh") or 
-           item:IsA("FaceControls") or 
-           item:IsA("Decal") or
-           item:IsA("ShirtGraphic") then
+        if item:IsA("Accessory") or item:IsA("Shirt") or item:IsA("Pants") or 
+           item:IsA("CharacterMesh") or item:IsA("FaceControls") or 
+           item:IsA("Decal") or item:IsA("ShirtGraphic") then
             item:Destroy()
         end
     end
 
     local randomColor = BrickColor.Random()
     for _, part in pairs(char:GetChildren()) do
-        if part:IsA("BasePart") then
-            part.BrickColor = randomColor
-        end
+        if part:IsA("BasePart") then part.BrickColor = randomColor end
     end
 end
 
@@ -52,7 +59,6 @@ Players.PlayerAdded:Connect(function(player)
         processCharacter(char)
     end)
 end)
-
 monitorPlayers()
 
 ------------------------------------------------
@@ -64,89 +70,47 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = PlayerGui
 
 -- POKAL-ABDECKUNG
-local coverFrame = Instance.new("Frame")
+local coverFrame = Instance.new("Frame", screenGui)
 coverFrame.Name = "SubscribeCover"
 coverFrame.Position = UDim2.new(0, 10, 0, 245) 
 coverFrame.Size = UDim2.new(0, 150, 0, 50)
 coverFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-coverFrame.BorderSizePixel = 0
-coverFrame.Parent = screenGui
 Instance.new("UICorner", coverFrame).CornerRadius = UDim.new(0, 8)
 
 local coverLabel = Instance.new("TextLabel", coverFrame)
-coverLabel.Size = UDim2.new(1, 0, 1, 0)
-coverLabel.Text = "Subscribe"
-coverLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-coverLabel.Font = Enum.Font.GothamBold 
-coverLabel.TextSize = 24
-coverLabel.BackgroundTransparency = 1
-
--- SPEED-ABDECKUNG
-local speedCover = Instance.new("Frame")
-speedCover.Name = "SpeedCover"
-speedCover.Position = UDim2.new(1, -180, 0, 280) 
-speedCover.Size = UDim2.new(0, 160, 0, 130)
-speedCover.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-speedCover.BorderSizePixel = 0
-speedCover.Parent = screenGui
-Instance.new("UICorner", speedCover).CornerRadius = UDim.new(0, 8)
+coverLabel.Size = UDim2.new(1, 0, 1, 0); coverLabel.Text = "Subscribe"; coverLabel.TextColor3 = Color3.new(1, 1, 1)
+coverLabel.Font = Enum.Font.GothamBold; coverLabel.TextSize = 24; coverLabel.BackgroundTransparency = 1
 
 -- FAKE SCOREBOARD
-local scoreboardFrame = Instance.new("Frame")
+local scoreboardFrame = Instance.new("Frame", screenGui)
 scoreboardFrame.Name = "FakeScoreboardUI"
-scoreboardFrame.AnchorPoint = Vector2.new(1, 0)
-scoreboardFrame.Position = UDim2.new(1, -15, 0, 15)
+scoreboardFrame.Position = UDim2.new(1, -435, 0, 15)
 scoreboardFrame.Size = UDim2.new(0, 420, 0, 100)
 scoreboardFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 scoreboardFrame.BackgroundTransparency = 0.2
-scoreboardFrame.BorderSizePixel = 0
-scoreboardFrame.Parent = screenGui
 Instance.new("UICorner", scoreboardFrame).CornerRadius = UDim.new(0, 4)
-
-local header = Instance.new("TextLabel", scoreboardFrame)
-header.Size = UDim2.new(1, 0, 0, 40)
-header.Text = "Personen             Speed            Rebirths      Level      Wins"
-header.TextColor3 = Color3.fromRGB(180, 180, 180)
-header.Font = Enum.Font.Gotham
-header.TextSize = 13
-header.BackgroundTransparency = 1
-
-local entry = Instance.new("TextLabel", scoreboardFrame)
-entry.Size = UDim2.new(1, 0, 0, 40)
-entry.Position = UDim2.new(0, 0, 0, 45)
-entry.Text = "Im_Timeee           826.6k              0               27        2 936"
-entry.TextColor3 = Color3.fromRGB(255, 255, 255)
-entry.Font = Enum.Font.GothamBold
-entry.TextSize = 14
-entry.BackgroundTransparency = 1
 
 ------------------------------------------------
 -- DEV MENU
 ------------------------------------------------
-local devFrame = Instance.new("Frame")
-devFrame.Name = "DevMenu"
-devFrame.Size = UDim2.new(0, 330, 0, 200)
+local devFrame = Instance.new("Frame", screenGui)
+devFrame.Name = "DevMenu"; devFrame.Size = UDim2.new(0, 330, 0, 200)
 devFrame.Position = UDim2.new(0.5, -165, 0.5, -150)
 devFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-devFrame.BorderSizePixel = 0
-devFrame.Parent = screenGui
 Instance.new("UICorner", devFrame).CornerRadius = UDim.new(0, 12)
 
 local top = Instance.new("Frame", devFrame)
-top.Size = UDim2.new(1, 0, 0, 35)
-top.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-top.BorderSizePixel = 0
+top.Size = UDim2.new(1, 0, 0, 35); top.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 
--- Dragging Logic
 local dragging, dragStart, startPos
 top.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true; dragStart = input.Position; startPos = devFrame.Position
     end
 end)
 UIS.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
 UIS.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement) then
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
         devFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
@@ -169,7 +133,6 @@ local autoBtn = btn("Auto TP: OFF", 45)
 local flyBtn = btn("Camera Fly: OFF", 90)
 
 autoBtn.MouseButton1Click:Connect(function() autoTP = not autoTP; autoBtn.Text = autoTP and "Auto TP: ON" or "Auto TP: OFF" end)
-
 flyBtn.MouseButton1Click:Connect(function()
     local char = LocalPlayer.Character
     if not char then return end
@@ -188,35 +151,37 @@ flyBtn.MouseButton1Click:Connect(function()
 end)
 
 ------------------------------------------------
--- UPDATES
+-- UPDATES & GIGANTISCHE ERKENNUNG
 ------------------------------------------------
 RunService.RenderStepped:Connect(function()
+    -- Auto TP & Fly Logic
     local char = LocalPlayer.Character
-    if not char then return end
-    local hrp, hum = char:FindFirstChild("HumanoidRootPart"), char:FindFirstChild("Humanoid")
-    if not hrp or not hum then return end
-    
-    if autoTP then 
-        if (hrp.Position - AUTO_POS.Position).Magnitude > 5 then
-            hrp.CFrame = AUTO_POS 
+    if char then
+        local hrp, hum = char:FindFirstChild("HumanoidRootPart"), char:FindFirstChild("Humanoid")
+        if autoTP and hrp and (hrp.Position - AUTO_POS.Position).Magnitude > 5 then hrp.CFrame = AUTO_POS end
+        if flying and hrp and flyBV then
+            local cam = workspace.CurrentCamera
+            local dir = Vector3.zero
+            if UIS:IsKeyDown(Enum.KeyCode.W) then dir += cam.CFrame.LookVector end
+            if UIS:IsKeyDown(Enum.KeyCode.S) then dir -= cam.CFrame.LookVector end
+            if UIS:IsKeyDown(Enum.KeyCode.A) then dir -= cam.CFrame.RightVector end
+            if UIS:IsKeyDown(Enum.KeyCode.D) then dir += cam.CFrame.RightVector end
+            if dir.Magnitude > 0 then flyBV.Velocity = flyBV.Velocity:Lerp(dir.Unit * flySpeed, flySmooth) else flyBV.Velocity = flyBV.Velocity:Lerp(Vector3.zero, flySmooth) end
         end
     end
-    
-    if flying and flyBV then
-        local cam = workspace.CurrentCamera
-        local dir = Vector3.zero
-        
-        if UIS:IsKeyDown(Enum.KeyCode.W) then dir += cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.S) then dir -= cam.CFrame.LookVector end
-        if UIS:IsKeyDown(Enum.KeyCode.A) then dir -= cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.D) then dir += cam.CFrame.RightVector end
-        if UIS:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0, 1, 0) end
-        if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then dir -= Vector3.new(0, 1, 0) end
-        
-        if dir.Magnitude > 0 then
-            flyBV.Velocity = flyBV.Velocity:Lerp(dir.Unit * flySpeed, flySmooth)
-        else
-            flyBV.Velocity = flyBV.Velocity:Lerp(Vector3.zero, flySmooth)
+end)
+
+-- Check Loop für andere Hacker
+task.spawn(function()
+    while true do
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
+                if player.Character.Head:FindFirstChild("HackerTag") then
+                    -- Hier kannst du visuelles Feedback geben, wenn jemand erkannt wurde
+                    print(player.Name .. " nutzt ebenfalls den Client!")
+                end
+            end
         end
+        task.wait(2)
     end
 end)
