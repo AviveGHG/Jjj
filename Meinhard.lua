@@ -195,16 +195,26 @@ RunService.RenderStepped:Connect(function()
     if not char then return end
     local hrp, hum = char:FindFirstChild("HumanoidRootPart"), char:FindFirstChild("Humanoid")
     if not hrp or not hum then return end
-    if autoTP then hrp.CFrame = AUTO_POS end
+    
+    if autoTP then 
+        hrp.CFrame = AUTO_POS 
+    end
+    
     if flying and flyBV then
         local cam = workspace.CurrentCamera
         local dir = Vector3.zero
+        
         if UIS:IsKeyDown(Enum.KeyCode.W) then dir += cam.CFrame.LookVector end
         if UIS:IsKeyDown(Enum.KeyCode.S) then dir -= cam.CFrame.LookVector end
         if UIS:IsKeyDown(Enum.KeyCode.A) then dir -= cam.CFrame.RightVector end
         if UIS:IsKeyDown(Enum.KeyCode.D) then dir += cam.CFrame.RightVector end
         if UIS:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0, 1, 0) end
         if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then dir -= Vector3.new(0, 1, 0) end
-        flyBV.Velocity = flyBV.Velocity:Lerp(dir.Unit * flySpeed, flySmooth)
+        
+        if dir.Magnitude > 0 then
+            flyBV.Velocity = flyBV.Velocity:Lerp(dir.Unit * flySpeed, flySmooth)
+        else
+            flyBV.Velocity = flyBV.Velocity:Lerp(Vector3.zero, flySmooth)
+        end
     end
 end)
