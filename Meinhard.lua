@@ -197,7 +197,9 @@ RunService.RenderStepped:Connect(function()
     if not hrp or not hum then return end
     
     if autoTP then 
-        hrp.CFrame = AUTO_POS 
+        if (hrp.Position - AUTO_POS.Position).Magnitude > 5 then
+            hrp.CFrame = AUTO_POS 
+        end
     end
     
     if flying and flyBV then
